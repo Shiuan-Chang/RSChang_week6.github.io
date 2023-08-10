@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="/public/success.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+</head>
+
+<body>
+  <header class="topbar">
+    <span>歡迎光臨，這是會員頁</span>
+  </header>
+  <section class="form">
+    <span>{{name}}，歡迎登入系統</span>
+    <a href="/signout"> 登出系統</a>
+  </section>
+  <hr>
+  <section class="form" style="margin-top: 30px;">
+    <form action="{{ url_for('createMessage') }}" method="POST">
+      <span style="text-align: center; display: block;">快來留言吧</span>
+      <div class="content">
+        <span style="margin-top: 8px;">內容</span>
+        <input class="box1" type="text" name="message" />
+      </div>
+      <div class="button">
+        <button type="submit">送出</button>
+      </div>
+    </form>
+  </section>
+  <hr>
+  <section class="form" style="margin-top: 30px; color: black;">
+    <ul>
+      {% for message in messages %}
+      <p class="message" data-id="{{message[2]}}">
+        {{ message[0] }}: {{ message[1] }}
+        <!-- 如果留言的作者是當前登入的用戶,name在flask鐘用session儲存 -->
+        {% if message[0]==name %}
+        <button class="delete-btn" data-id="{{message[2]}}">X</button>
+        {% endif %}
+      </p>
+      {% endfor %}
+    </ul>
+  </section>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let deleteBtns = document.getElementsByClassName('delete-btn');
+
+      // 使用Array.from 將 HTMLCollection 轉換為陣列，以便使用 forEach
+      Array.from(deleteBtns).forEach(btn => {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          let Confirmed = confirm("確定要刪除這條留言嗎？");
+
+          if (Confirmed) {
+            let messageId = e.target.getAttribute('data-id');
+
+            // AJAX 請求到後端端點
+            fetch(`/deleteMessage`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ id: messageId })
+            })
+              .then(response => {
+                if (response.ok) {
+                  // 如果返回 200 OK，重新載入頁面
+                  window.location.reload();
+                } else {
+                  console.error('Failed to delete message');
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              });
+
+          }
+        });
+      });
+    });
+
+
+
+  </script>
+</body>
+
+</html>
