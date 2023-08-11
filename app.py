@@ -14,7 +14,7 @@ app.secret_key = "any string but secret"  # 設定session
 config = {
     'user': 'root',
     'password': 'root',
-    'host': '36.230.165.39',
+    'host': '',
     'database': 'website',
     'raise_on_warnings': True
 }
@@ -138,4 +138,4 @@ def deleteMessage():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3000)
+    app.run(port=3000)
