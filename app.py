@@ -25,7 +25,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/signin", methods=["POST"])  # 沒有用post網址會顯示出帳密
+@app.route("/signin", methods=["POST"])  
 def signin():
     username = request.form['account2']
     password = request.form['password2']
